@@ -1,30 +1,43 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import {
+  Box,
+  Pressable,
+  Text,
+  Toast,
+  Input,
+  Icon,
+  Flex,
+  Center,
+  TextArea,
+  Heading,
+  Button,
+} from "native-base";
 
 const PostScreen = ({ route, navigation }) => {
   const { id, title, content } = route.params;
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={{
-          position: "absolute",
-          top: 10,
-          right: 20,
-        }}
-        onPress={() =>
-          navigation.navigate("Edit", {
-            id,
-            title,
-            content,
-          })
-        }
-      >
-        <AntDesign name="edit" size={32} color="black" />
-      </TouchableOpacity>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.content}>{content}</Text>
-    </View>
+    <Box safeArea>
+      <Flex justifyContent={"flex-end"} alignItems={"flex-end"} mx={6}>
+        <Pressable
+          onPress={() =>
+            navigation.navigate("Edit", {
+              id,
+              title,
+              content,
+            })
+          }
+        >
+          <AntDesign name="edit" style={{ color: "#000" }} size={24} />
+        </Pressable>
+      </Flex>
+
+      <Center my={24}>
+        <Heading>{title}</Heading>
+        <Text fontSize={"md"}>{content}</Text>
+      </Center>
+    </Box>
   );
 };
 
@@ -34,7 +47,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    //justifyContent: "center",
   },
   title: {
     fontSize: 24,

@@ -1,6 +1,19 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import { StyleSheet, View, TextInput, Dimensions } from "react-native";
 import jsonServer from "../api/jsonServer";
+import {
+  Box,
+  Pressable,
+  Text,
+  Toast,
+  Input,
+  Icon,
+  Flex,
+  Center,
+  TextArea,
+  Heading,
+  Button,
+} from "native-base";
 
 const AddScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");
@@ -15,26 +28,42 @@ const AddScreen = ({ navigation }) => {
     }
     navigation.navigate("Home");
   };
+
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        value={title}
-        placeholder="Title"
-        autoCorrect={false}
-        onChangeText={(e) => setTitle(e)}
-      />
-      <TextInput
-        style={{ ...styles.input, paddingVertical: 100 }}
-        value={content}
-        multiline={true}
-        editable={true}
-        autoCorrect={false}
-        placeholder="Content"
-        onChangeText={(e) => setContent(e)}
-      />
-      <Button title="Add Blog Post" onPress={addPost} />
-    </View>
+    <Box safeArea mx={6}>
+      <Flex justifyContent={"center"}>
+        <Input
+          value={title}
+          placeholder="Title"
+          bg={"white"}
+          autoCorrect={false}
+          autoComplete="off"
+          onChangeText={(e) => setTitle(e)}
+          variant={"outline"}
+          rounded={"md"}
+          py={3}
+        />
+
+        <TextArea
+          h={48}
+          my={2}
+          autoCorrect={false}
+          placeholder="Content"
+          value={content}
+          bg={"white"}
+          onChangeText={(e) => setContent(e)}
+        />
+
+        <Button
+          size="md"
+          variant="solid"
+          onPress={addPost}
+          isDisabled={!title || !content ? true : false}
+        >
+          Add Blog Post
+        </Button>
+      </Flex>
+    </Box>
   );
 };
 
@@ -45,14 +74,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-
-  input: {
-    borderWidth: 1,
-    borderColor: "black",
-    width: "80%",
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 5,
   },
 });

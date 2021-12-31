@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { StyleSheet, View, TouchableOpacity, FlatList } from "react-native";
 import jsonServer from "../api/jsonServer";
-import { AntDesign } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { AntDesign, Feather } from "@expo/vector-icons";
+import {
+  Box,
+  Pressable,
+  Text,
+  Input,
+  Icon,
+  Flex,
+  Center,
+  Heading,
+  useToast,
+} from "native-base";
+
+// Toast
 
 const Home = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
+  const toast = useToast();
 
   const fetchPosts = async () => {
     const response = await jsonServer.get("/blogPosts");
@@ -28,32 +35,42 @@ const Home = ({ navigation }) => {
   const deletePost = (id) => {
     jsonServer.delete(`/blogPosts/${id}`).then(() => {
       setPosts(posts.filter((post) => post.id !== id));
+      toast.show({
+        description: `Post with ID of ${id} deleted`,
+        duration: 1000,
+      });
     });
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={{ marginVertical: 5 }}>
-        Found {posts.length} blog posts.
-      </Text>
-      <TouchableOpacity
-        style={{
-          position: "absolute",
-          top: 10,
-          right: 20,
-        }}
-        onPress={() => navigation.navigate("Add")}
-      >
-        <AntDesign name="pluscircleo" size={32} color="black" />
-      </TouchableOpacity>
+    <Box safeArea>
+      <Flex justifyContent={"flex-end"} alignItems={"flex-end"} mx={6}>
+        <Pressable onPress={() => navigation.navigate("Add")}>
+          <AntDesign name="pluscircleo" size={32} color="black" />
+        </Pressable>
+      </Flex>
+      <Center pb={2}>
+        <Text>
+          Found <Text fontWeight={"bold"}>{posts.length}</Text> blog posts.
+        </Text>
+      </Center>
       <FlatList
         data={posts}
-        style={styles.list}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => {
           return (
-            <View style={styles.item}>
-              <TouchableOpacity
+            <Flex
+              direction="row"
+              justifyContent={"space-between"}
+              px={6}
+              alignItems={"center"}
+              bg={"white"}
+              mx={4}
+              my={2}
+              rounded={"md"}
+              py={1}
+            >
+              <Pressable
                 onPress={() =>
                   navigation.navigate("Post", {
                     id: item.id,
@@ -62,55 +79,27 @@ const Home = ({ navigation }) => {
                   })
                 }
               >
-                <View>
-                  <Text style={styles.title}>{item.title}</Text>
-                  <Text style={styles.content}>{item.content}</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <AntDesign
-                  name="delete"
+                <Flex w={280}>
+                  <Heading>{item.title}</Heading>
+                  <Text fontSize={"sm"}>{item.content}...</Text>
+                </Flex>
+              </Pressable>
+              <Pressable>
+                <Feather
+                  name="trash"
                   size={24}
                   color="black"
                   onPress={() => deletePost(item.id)}
                 />
-              </TouchableOpacity>
-            </View>
+              </Pressable>
+            </Flex>
           );
         }}
       />
-    </SafeAreaView>
+    </Box>
   );
 };
 
 export default Home;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  list: {
-    width: "100%",
-    paddingHorizontal: 20,
-  },
-  item: {
-    padding: 10,
-    marginVertical: 2,
-    backgroundColor: "#ffffff",
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderRadius: 10,
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 22,
-    marginBottom: 5,
-  },
-  content: {
-    fontSize: 14,
-  },
-});
+const styles = StyleSheet.create({});
